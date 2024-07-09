@@ -3,9 +3,9 @@ name = "grafton-auth"
 version = "0.1.0"
 authors = ["Grant Sparks <grant@grafton.ai>"]
 edition = "2021"
-description = "The Grafton Machine Shed API Server, written in Rust, serves multiple APIs, protocols, and services. It aims to provide a robust, efficient, and flexible platform for hosting a variety of internet-collaborating applications particularly with AI Agents and LLMs."
+description = "The Auth layer for grafton-server"
 license = "Apache-2.0"
-repository = "https://github.com/GrantSparks/grafton"
+repository = "https://github.com/GrantSparks/grafton-auth"
 homepage = "https://www.grafton.ai"
 categories = ["network-programming", "web-programming"]
 keywords = ["api", "web", "http", "server", "networking", "ai"]
@@ -46,7 +46,7 @@ tracing-subscriber = "*"
 typed-builder = "*"
 url = "2"
 grafton-config = "*"
-grafton-server = { path = "../../grafton-server" }
+grafton-server = { path = "../grafton-server" }
 
 [dependencies.askama]
 features = ["with-axum"]
