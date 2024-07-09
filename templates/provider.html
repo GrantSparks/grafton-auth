@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Grafton Machine Shed</title>
+</head>
+
+<body>
+  {% if let Some(message) = message %}
+  <span><strong>{{ message }}</strong></span>
+  {% endif %}
+
+  <ul>
+    {% for provider in providers %}
+    <form method="post" action="/login/{{ provider|lower }}">
+      <li>
+        <input type="submit" value="{{ provider }}" />
+        <input type="hidden" name="next" value="{{ next }}" />
+      </li>
+    </form>
+    {% endfor %}
+  </ul>
+
+</body>
+
+</html>
