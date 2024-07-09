@@ -12,3 +12,12 @@ Cargo.lock
 
 # MSVC Windows builds of rustc generate these, which store debugging information
 *.pdb
+
+# Project secrets should not be included in the git repository
+**/*.pem
+**/local.toml
+**/dev.toml
+**/stage.toml
+**/test.toml
+**/prod.toml
+*.zip
