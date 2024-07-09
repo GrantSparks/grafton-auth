@@ -46,8 +46,12 @@ tracing-appender = "*"
 tracing-subscriber = "*"
 typed-builder = "*"
 url = "2"
-grafton-config = "*"
-grafton-server = { path = "../grafton-server" }
+
+[dependencies.grafton-config]
+path = "../grafton-config"
+
+[dependencies.grafton-server]
+path = "../grafton-server"
 
 [dependencies.askama]
 features = ["with-axum"]
