@@ -10,6 +10,7 @@ homepage = "https://www.grafton.ai"
 categories = ["network-programming", "web-programming"]
 keywords = ["api", "web", "http", "server", "networking", "ai"]
 publish = false
+readme = "README.md"
 include = [
     "Cargo.toml",
     "LICENSE",
