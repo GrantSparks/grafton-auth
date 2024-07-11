@@ -17,6 +17,7 @@ use {
     url::Url,
 };
 
+use axum::extract::State;
 use grafton_server::{
     axum::{
         extract::{Form, Path, Query},
@@ -32,8 +33,7 @@ use crate::{
     oauth2::{
         AuthzReq, AuthzResp, Credentials, NextOrAuthzReq, NextUrl, OpenAiAuthParams,
         CSRF_STATE_KEY, NEXT_URL_KEY,
-    },
-    AuthSession, Config, Error,
+    }, AuthConfigProvider, AuthSession, Config, Error
 };
 
 #[derive(TypedBuilder)]
@@ -199,6 +199,7 @@ where
     pub async fn callback(
         &self,
         session: Session,
+        config: Config,
         Path(provider): Path<String>,
         Query(AuthzResp {
             code,
@@ -219,10 +220,15 @@ where
 
         match session.remove::<String>(NEXT_URL_KEY).await {
             Ok(Some(next)) if !next.is_empty() => {
-                let mut url = Url::parse(&next).map_err(|_| {
+
+                // Parse absolute or relative URL paths
+                let redirect_next = config.get_server_config().website.format_public_server_url(&next);
+                let url_result = Url::parse(&next).or_else(|_| Url::parse(&redirect_next));
+
+                let Ok(mut url) = url_result else {
                     error!("Invalid URL in session: {}", next);
-                    Error::InvalidNextUrl(next)
-                })?;
+                    return Err(Error::InvalidNextUrl(next));
+                };
 
                 sqlx::query(
                     r"
@@ -270,7 +276,10 @@ where
         Ok(Json(response_body))
     }
 
-    pub fn router(self) -> GraftonRouter<C> {
+    pub fn router(self) -> GraftonRouter<C>
+    where C: ServerConfigProvider + AuthConfigProvider,
+     {
+        
         let this = std::sync::Arc::new(self);
         Router::new()
             .route(
@@ -306,9 +315,9 @@ where
             .route(
                 "/oauth/:provider/callback",
                 get({
-                    move |session, path, query| {
+                    move |session, State(config): State<Config>,path, query| {
                         let this = this.clone();
-                        async move { this.callback(session, path, query).await }
+                        async move { this.callback(session, config, path, query).await }
                     }
                 }),
             )
