@@ -114,7 +114,7 @@ where
         let file_service = if let Some(factory) = self.fallback_service_factory {
             factory(&app_ctx)?
         } else {
-            let fallback_file_path = app_ctx.config.get_auth_config().web_root.clone();
+            let fallback_file_path = app_ctx.config.get_auth_config().content.web_root.clone();
             let default_serve_file = ServeFile::new(&fallback_file_path);
 
             create_file_service(&app_ctx).unwrap_or_else(|e| {

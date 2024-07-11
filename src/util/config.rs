@@ -128,6 +128,16 @@ pub struct AuthProviderConfig {
     pub extra: Map<String, Value>,
 }
 
+#[derive(Serialize, Deserialize, Derivative,Debug, Clone)]
+#[derivative(Default)]
+#[serde(default)]
+pub struct Content {
+    #[derivative(Default(value = "\"../public/www\".into()"))]
+    pub web_root: String,
+    #[derivative(Default(value = "\"index.html\".into()"))]
+    pub index_page: String,
+}
+
 #[derive(Debug, Serialize, Deserialize, Derivative, Clone)]
 #[derivative(Default)]
 #[serde(default)]
@@ -143,10 +153,8 @@ pub struct Config {
     #[derivative(Default)]
     #[serde(default)]
     pub routes: Routes,
-    #[derivative(Default(value = "\"../public/www\".into()"))]
-    pub web_root: String,
-    #[derivative(Default(value = "\"index.html\".into()"))]
-    pub index_page: String,
+    #[derivative(Default(value = "Content::default()"))]
+    pub content: Content,
 }
 
 impl GraftonConfigProvider for Config {
